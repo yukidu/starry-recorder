@@ -40,7 +40,7 @@ export async function verifyStarryToken(
   if(!jwk)throw new AuthenticationError();
   try{
     const key=await crypto.subtle.importKey('jwk',jwk,{name:'RSASSA-PKCS1-v1_5',hash:'SHA-256'},false,['verify']);
-    const valid=await crypto.subtle.verify('RSASSA-PKCS1-v1_5',key,decodeBase64Url(signature),new TextEncoder().encode(head+'.'+body));
+    const valid=await crypto.subtle.verify('RSASSA-PKCS1-v1_5',key,new Uint8Array(decodeBase64Url(signature)),new TextEncoder().encode(head+'.'+body));
     if(!valid)throw new AuthenticationError();
   }catch{throw new AuthenticationError();}
   return claims.sub;
