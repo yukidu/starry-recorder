@@ -1,11 +1,15 @@
 import {assertRecording,assertUploadSize,requireString,ValidationError} from './core';
 import {verifyStarryToken,AuthenticationError} from './auth';
+import {capabilities} from './capabilities';
 /** Replace with generated Cloudflare Env types after verifying resource bindings. */
 interface Env {
   STAR_ID_ISSUER:string;STAR_ID_AUDIENCE:string;STAR_ID_JWKS_URL:string;
+  FEATURE_MEMBER_API?:string;FEATURE_AUDIO_UPLOAD?:string;FEATURE_SHARING?:string;
   DB:D1Database;MEDIA:R2Bucket;
 }
-const headers={'content-type':'application/json; charset=utf-8','cache-control':'no-store'};
+const headers={'content-type':'application/json; charset=utf-8','cache-control':'no-store',
+  'x-content-type-options':'nosniff','referrer-policy':'no-referrer','x-robots-tag':'noindex, nofollow',
+  'permissions-policy':'microphone=(), camera=(), geolocation=()'};
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers});
 const error=(status:number,code:string)=>json({error:code},status);
 async function bodyObject(req:Request):Promise<Record<string,unknown>>{
@@ -35,7 +39,11 @@ async function mayView(env:Env,userId:string,courseId:string):Promise<boolean>{
 async function handle(req:Request,env:Env):Promise<Response>{
   const url=new URL(req.url),path=url.pathname,method=req.method;
   if(method==='GET'&&path==='/api/health')return json({service:'starry-recorder',ready:false,state:'development'});
+  if(method==='GET'&&path==='/api/capabilities')return json({features:capabilities(env)});
   if(!path.startsWith('/api/'))return error(404,'not_found');
+  const features=capabilities(env);
+  // No user records or private storage access before centrally verified identity is ready.
+  if(!features.memberApi)return error(503,'identity_integration_pending');
   const origin=req.headers.get('origin');
   if(origin&&origin!==url.origin)return error(403,'cross_origin_denied');
   const userId=await member(req,env);
@@ -76,6 +84,7 @@ async function handle(req:Request,env:Env):Promise<Response>{
   }
   const upload=/^\/api\/recordings\/([0-9a-f-]{36})\/audio$/.exec(path);
   if(upload&&method==='PUT'){
+    if(!features.audioUpload)return error(503,'audio_pipeline_not_ready');
     // Stored in nonpublic quarantine ONLY. Never promote until server-side AAC/M4A checks exist.
     const size=assertUploadSize(Number(req.headers.get('content-length')));
     if(req.headers.get('content-type')!=='audio/mp4')return error(415,'m4a_required');
@@ -111,6 +120,7 @@ async function handle(req:Request,env:Env):Promise<Response>{
   }
   const share=/^\/api\/courses\/([0-9a-f-]{36})\/shares$/.exec(path);
   if(share&&method==='POST'){
+    if(!features.sharing)return error(503,'sharing_not_ready');
     if(!await owns(env,userId,share[1]))return error(404,'not_found');
     const body=await bodyObject(req),recipient=requireString(body.recipientUserId,'recipientUserId',200);
     if(recipient===userId)return error(400,'self_share_forbidden');
