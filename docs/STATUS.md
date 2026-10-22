@@ -6,7 +6,7 @@
 - Repo: https://github.com/yukidu/starry-recorder
 - Draft PR #1: https://github.com/yukidu/starry-recorder/pull/1，**尚未合併 main**。
 - PR head `52b47f691c00465e5f77f301e49b4e8cd872e24b` 的 GitHub Actions 驗證成功：https://github.com/yukidu/starry-recorder/actions/runs/39850198972
-- 該 CI 只執行核心測試、SQLite 測試及 Vite 前端 build；**未涵蓋真實 Worker 部署、端到端驗證、原生錄音或正式付費**。
+- 最新 GitHub Actions 已加上 Worker 型別檢查、Cloudflare 預覽設定 dry-run，並且**全部通過**：https://github.com/yukidu/starry-recorder/actions/runs/39860587291 。這只是編譯與模擬驗證，**沒有進行真正 Worker 部署，也未涵蓋端到端驗證、原生錄音或正式付費**。
 
 ## 已建立的 Cloudflare 預覽資源（獨立且無正式會員資料）
 - Account: `611de84062006fe96fafd0cf157f2ec0`
