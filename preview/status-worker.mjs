@@ -57,5 +57,5 @@ function respond(request) {
   }
   return new Response('Not Found',{status:404,headers:h});
 }
-if(typeof addEventListener!=='undefined')addEventListener('fetch',event=>event.respondWith(respond(event.request)));
-export {respond};
+export default {fetch:respond,respond};
+
