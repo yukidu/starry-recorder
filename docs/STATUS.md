@@ -1,9 +1,29 @@
-# 2026-10-23 開發進度
+# 2026-10-23｜上線前實際狀態
 
-尚未部署。已建立公開 GitHub Repo `yukidu/starry-recorder`，本次程式上傳至獨立 branch 的 Draft PR，尚未合併 main。
+**尚未正式部署。** 使用者已授權正式部署準備，但安全門檻不允許發布未完成功能。
 
-已在本機重新通過 12 項核心測試與 4 項 SQLite 結構測試。GitHub Actions、完整前端 build 和 Worker typecheck 尚未證實成功；目前環境無法連線 npm registry。網站尚未提供真實錄音與付費。
+## 已確認
+- Repo: https://github.com/yukidu/starry-recorder
+- Draft PR #1: https://github.com/yukidu/starry-recorder/pull/1，**尚未合併 main**。
+- PR head `52b47f691c00465e5f77f301e49b4e8cd872e24b` 的 GitHub Actions 驗證成功：https://github.com/yukidu/starry-recorder/actions/runs/39850198972
+- 該 CI 只執行核心測試、SQLite 測試及 Vite 前端 build；**未涵蓋真實 Worker 部署、端到端驗證、原生錄音或正式付費**。
 
-Starry ID 實際登入與 JWKS、雲端 AI、音訊格式判定／轉檔、原生背景錄音、正式付款及實機驗收均未完成。
+## 已建立的 Cloudflare 預覽資源（獨立且無正式會員資料）
+- Account: `611de84062006fe96fafd0cf157f2ec0`
+- D1: `starry-recorder-preview-db`，UUID `b13dc8f0-eb02-42fa-9685-c99d36d23ea7`。
+- D1: `migrations/0001_init.sql` 已於預覽資料庫套用成功，並已確認 9 張業務資料表。
+- R2: `starry-recorder-preview-media`，APAC 儲存，私人存取（無自訂網域、公開 r2.dev 連結未啟用）。
+- **尚未建立正式產品 Worker，沒有部署網頁，沒有開啟 `record.starry.phd` 網域。**
 
-此開發里程碑只保留安全的核心規則、登入驗證範例、資料結構、不能實際操作的介面與未上線的受保護 API；**不能視為完整產品**。後續先在 PR 檢查 CI，確認安全測試及實作成熟度後才進入 Preview，絕不直接上線。
+## 尚未完成的正式門檻
+- 實際 Starry ID 及會員權限端到端串接，跨會員私人資料隔離測試。
+- M4A/AAC 16kHz、64kbps 的真實轉碼與伺服端音訊驗證；不接受只修改副檔名。
+- 真實雲端錄音播放、AI 逐字稿、50 張照片 OCR、資料引用式 AI 搜尋與長檔處理。
+- Android/iOS 原生背景錄音、來電中斷復原與實機驗收。
+- 訂閱月年繳、Apple/Google/Web 收據與續費、退款、跨地區規範及個資法務。
+- 完整 Worker 型別檢查、安全與負載測試、全量 CI/Release Gate。
+- 主分支合併、Cloudflare Production Deploy、正式網址驗證及部署還原碼。
+
+## 安全原則
+測試環境沒有公開會員檔案；不允許在未完成授權驗證時公開音訊 API。
+即使獲得上線授權，只能在全部必需驗收通過後稱為「正式上線」。
