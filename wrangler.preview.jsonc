@@ -2,7 +2,7 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "starry-recorder-preview",
   "main": "src/worker.ts",
-  "compatibility_date": "2026-10-23",
+  "compatibility_date": "2026-10-22",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
   "assets": {
