@@ -18,3 +18,5 @@ jobs:
       - run: npm run build
       - run: npx tsc --project tsconfig.worker.json
       - run: npx wrangler deploy --dry-run --config wrangler.preview.jsonc
+
+      - run: node --test preview/status-worker.test.mjs
