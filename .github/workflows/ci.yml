@@ -16,3 +16,5 @@ jobs:
       - run: npm test
       - run: python3 tests/schema_test.py
       - run: npm run build
+      - run: npx tsc --project tsconfig.worker.json
+      - run: npx wrangler deploy --dry-run --config wrangler.preview.jsonc
