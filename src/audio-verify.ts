@@ -1,4 +1,4 @@
-import {ValidationError} from './core';
+import {ValidationError} from './core.js';
 /** Contract for JSON emitted by a trusted server-side ffprobe process.
  * NEVER accept this object from a mobile/web client as proof of a file's media properties.
  */
