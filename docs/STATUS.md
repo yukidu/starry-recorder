@@ -1,29 +1,28 @@
-# 2026-10-23｜上線前實際狀態
+# 繁星 AI 錄音｜2026-10-23 開發與部署狀態
 
-**尚未正式部署。** 使用者已授權正式部署準備，但安全門檻不允許發布未完成功能。
+## 最新結論
+- **正式版尚未部署**；GitHub PR #1 為 Draft，未合併到 main。
+- 僅部署獨立無會員資料測試站：https://starry-recorder-preview.yukidu.workers.dev/
+- Preview Workers 版本：`9f479b66-ff38-41ec-99e3-d623183ee9af`；回復碼 `SR-PREVIEW-20261023-9F479B66`。詳見 `docs/DEPLOYMENTS.md`。
+- 獨立 Cloudflare D1 `starry-recorder-preview-db` 及私人 R2 `starry-recorder-preview-media` 已建立並驗證，不屬於正式環境。
 
-## 已確認
-- Repo: https://github.com/yukidu/starry-recorder
-- Draft PR #1: https://github.com/yukidu/starry-recorder/pull/1，**尚未合併 main**。
-- PR head `52b47f691c00465e5f77f301e49b4e8cd872e24b` 的 GitHub Actions 驗證成功：https://github.com/yukidu/starry-recorder/actions/runs/39850198972
-- 最新 GitHub Actions 已加上 Worker 型別檢查、Cloudflare 預覽設定 dry-run，並且**全部通過**：https://github.com/yukidu/starry-recorder/actions/runs/39860587291 。這只是編譯與模擬驗證，**沒有進行真正 Worker 部署，也未涵蓋端到端驗證、原生錄音或正式付費**。
+## 程式進展與 GitHub 驗證
+- 核心領域規則：單筆錄音 100 分鐘、每課最多 10 筆、單檔 100MB、每筆 50 張照片、10 秒影片、免費轉錄及訂閱方案額度。
+- 客戶錄音狀態機：100 分鐘時結束、暫停、續錄、意外中斷、必須先保存片段才能標記完成。**尚未接 Android/iOS 原生音訊 API**。
+- M4A 信任邊界：`verifyMediaProbe` 驗證伺服端 ffprobe 回傳的 AAC、16kHz、單聲道、約 64kbps、時長及檔案大小，不採信檔名或客戶填的 MIME；**正式轉檔服務及服務端執行仍未完成**。
+- AI 回答驗證：限制只有授權來源 ID 可引用，無來源回覆拒答；**尚未接 Cloudflare Workers AI／OCR 與安全檢索**。
+- 獨立會員 API：Starry ID 未正式整合前所有私人 API、上傳、分享預設拒絕。
+- 最新整套 GitHub 檢查成功：https://github.com/yukidu/starry-recorder/actions/runs/39866215074
+  - 31 項核心程式測試、2 項真實 FFmpeg／ffprobe 音檔測試、5 項 API 隔離測試、4 項 D1 SQLite 測試、4 項測試 Worker 測試，**合計 46 項**。
+  - React 前端 build、Worker TypeScript 型別檢查、Wrangler dry-run 均成功。
+  - 公網 HTTPS 測試站 smoke test：https://github.com/yukidu/starry-recorder/actions/runs/39866215085
 
-## 已建立的 Cloudflare 預覽資源（獨立且無正式會員資料）
-- Account: `611de84062006fe96fafd0cf157f2ec0`
-- D1: `starry-recorder-preview-db`，UUID `b13dc8f0-eb02-42fa-9685-c99d36d23ea7`。
-- D1: `migrations/0001_init.sql` 已於預覽資料庫套用成功，並已確認 9 張業務資料表。
-- R2: `starry-recorder-preview-media`，APAC 儲存，私人存取（無自訂網域、公開 r2.dev 連結未啟用）。
-- **尚未建立正式產品 Worker，沒有部署網頁，沒有開啟 `record.starry.phd` 網域。**
+## 重要依賴
+- Starry ID v2 仍未啟用正式跨 App 登入，已於 https://github.com/yukidu/Satrry-ID-Center/issues/23 開啟整合工作。
+- 真實雲端音檔轉檔與逐字稿、講者辨識、照片 OCR 與安全搜尋、Android/iOS 可靠背景錄音、Apple/Google/Web 月繳年繳等，全部未完成。
+- 全球商店發布、條款、上架實機測試及 2,000 會員負載測試尚未完成。
 
-## 尚未完成的正式門檻
-- 實際 Starry ID 及會員權限端到端串接，跨會員私人資料隔離測試。
-- M4A/AAC 16kHz、64kbps 的真實轉碼與伺服端音訊驗證；不接受只修改副檔名。
-- 真實雲端錄音播放、AI 逐字稿、50 張照片 OCR、資料引用式 AI 搜尋與長檔處理。
-- Android/iOS 原生背景錄音、來電中斷復原與實機驗收。
-- 訂閱月年繳、Apple/Google/Web 收據與續費、退款、跨地區規範及個資法務。
-- 完整 Worker 型別檢查、安全與負載測試、全量 CI/Release Gate。
-- 主分支合併、Cloudflare Production Deploy、正式網址驗證及部署還原碼。
-
-## 安全原則
-測試環境沒有公開會員檔案；不允許在未完成授權驗證時公開音訊 API。
-即使獲得上線授權，只能在全部必需驗收通過後稱為「正式上線」。
+## 安全規範
+- `record.starry.phd` 尚未啟用；不得對使用者宣稱錄音 App 已上線。
+- Preview Worker 只提供公開資訊，禁用登入、上傳、付款及私人 API。
+- 正式釋出必須符合 GitHub main 最新程式、CI 成功、Cloudflare Production Deploy 成功、正式網域驗證成功與功能安全驗收。
