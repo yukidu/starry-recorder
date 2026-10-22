@@ -1,4 +1,4 @@
-import {LIMITS,ValidationError} from './core';
+import {LIMITS,ValidationError} from './core.js';
 /** Pure state reducer for native recorder adapters. This does not record audio by itself. */
 export type RecorderSession={
  courseId:string;slot:number;elapsedSeconds:number;
