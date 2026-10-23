@@ -35,3 +35,12 @@
 - GitHub Actions：https://github.com/yukidu/starry-recorder/actions/runs/39866215074 已成功，包含 31 項核心單元測試、4 項 SQLite 測試、2 項 FFmpeg 實體音檔測試、5 項 Worker API 安全測試、前端 build、Cloudflare Worker TypeScript 型別檢查和 dry-run；另有 4 項測試頁測試通過。公開 Preview 站 HTTPS smoke test 成功：https://github.com/yukidu/starry-recorder/actions/runs/39866215085 。
 - Preview 站：https://starry-recorder-preview.yukidu.workers.dev/ ，僅有唯讀進度頁，不開放會員登入、音檔、AI 或付款。
 - **Production 尚未部署**。未合併 Draft PR #1；請勿將這些核心邏輯或測試頁當成可使用的完整錄音 App。
+
+## 2026-10-23 下午｜續建成果（尚未 Production）
+
+- 新增以會員、用量類別、付費期分開計算的 AI 額度台帳，原子扣款與重試防重複；免費 30 分鐘一生一次。已通過核心及 SQLite 測試。
+- Preview D1 已成功套用 `0002_quota_indices.sql` 和 `0003_retention_fields.sql`，已確認專用測試資料庫內仍是 0 位會員。
+- 180 天保留期：實作重要課程優先及最近使用排序的**刪除預覽**，尚未加入實際刪檔程式。
+- 新增會員自己才可標記重要課程、更新最近使用時間的資料操作及測試。
+- Cloudflare 測試站狀態頁更新，已驗證：https://github.com/yukidu/starry-recorder/actions/runs/39921154025 。
+- 最新 GitHub CI：https://github.com/yukidu/starry-recorder/actions/runs/39921154032 通過；Draft PR #1 尚未合併；正式網站與原生 Android/iOS App 均未上線。
