@@ -5,3 +5,5 @@ CREATE TABLE IF NOT EXISTS ai_synthetic_results(
  status TEXT NOT NULL CHECK(status IN ('succeeded','failed')),
  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_ai_lab_job_unique ON ai_daily_reservations(job_id);

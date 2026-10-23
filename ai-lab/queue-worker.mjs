@@ -15,7 +15,7 @@ export async function processSyntheticJob(env,job,day){
   WHERE (SELECT COUNT(*) FROM ai_daily_reservations WHERE usage_day=?) < 10
    AND (SELECT COALESCE(SUM(estimated_micro_usd),0)
     FROM ai_daily_reservations WHERE usage_day=?) + ? <= ?
-  RETURNING id`).bind(crypto.randomUUID(),day,job.id,MODEL,40000,day,day,40000,DAILY_CAP_MICRO_USD).first();
+  ON CONFLICT(job_id) DO NOTHING RETURNING id`).bind(crypto.randomUUID(),day,job.id,MODEL,40000,day,day,40000,DAILY_CAP_MICRO_USD).first();
  if(!reservation)return {status:'budget_exhausted'};
  const model=await env.AI.run(MODEL,{
    messages:[{role:'system',content:'Summarize the following synthetic engineering test sentence in Traditional Chinese, briefly.'},

@@ -32,3 +32,4 @@ jobs:
 
       - run: node --test preview/status-worker.test.mjs
       - run: node --test ai-lab/worker.test.mjs
+      - run: node --test ai-lab/queue-worker.test.mjs
