@@ -23,6 +23,7 @@ jobs:
       - run: node --test integration-tests/media-probe.test.mjs
       - run: npx esbuild src/worker.ts --bundle --platform=browser --format=esm --outfile=.build/worker-boundary.mjs
       - run: node --test integration-tests/worker-boundary.test.mjs
+      - run: node --test integration-tests/authenticated-course.test.mjs
       - run: npx tsc --project tsconfig.worker.json
       - run: npx wrangler deploy --dry-run --config wrangler.preview.jsonc
 
