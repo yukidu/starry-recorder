@@ -35,7 +35,7 @@ footer{font-size:12px;color:#8ea6c3;padding-top:25px}
 <p>這是獨立的部署驗證頁，不是可使用的錄音 App。尚未開放登入、錄音、音檔上傳、AI 逐字稿、私人資料及付款功能，也不會收集任何會員資訊。</p>
 <div class="items"><div class="item">✓ GitHub 獨立專案</div><div class="item">✓ Cloudflare 獨立測試資源</div>
 <div class="item">✓ 私人 R2 不公開</div><div class="item">✓ 資料庫測試環境</div>
-<div class="item">✓ AI 額度防重複計算，已通過測試</div><div class="item">✓ 重要課程與 180 天保留規則，已通過測試</div><div class="item">✓ M4A 真實音檔格式測試通過</div><div class="item">進行中：Starry ID 登入、AI 與原生背景錄音</div></div>
+<div class="item">✓ AI 額度防重複計算，已通過測試</div><div class="item">✓ 重要課程與 180 天保留規則，已通過測試</div><div class="item">✓ M4A 真實音檔格式測試通過</div><div class="item">✓ 私人課程管理與跨會員權限測試通過（功能尚未開放）</div><div class="item">進行中：Starry ID 正式登入、AI 與原生背景錄音</div></div>
 <p class="small">程式進度請查看 <a href="https://github.com/yukidu/starry-recorder/pull/1" rel="noopener noreferrer">GitHub PR #1</a>。</p></section>
 <footer>Starry.phd · Preview Only · No Member Data · No Payment</footer></main></body></html>`;
 function respond(request) {
