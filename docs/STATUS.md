@@ -72,3 +72,10 @@
 - Starry ID 新版中央 Portal 已開始提供 Google 網頁登入與中央會話管理，但尚無錄音 App 專屬的短效跨 App Token／撤銷驗證契約，因此錄音 App 對外私人功能仍保持 fail-closed；參照中央會員整合 issue #23。
 - GitHub CI https://github.com/yukidu/starry-recorder/actions/runs/39976606431 **成功**：66 項核心測試，其餘資料庫、影音檔案、Worker API、Web build、Worker typecheck 和 Wrangler dry-run 均通過。
 - **Cloudflare Production 尚未部署**，測試站僅顯示唯讀狀態，Cloudflare Worker 上沒有真正音訊處理服務。
+
+## 2026-10-23 晚間｜Preview v4 已驗證
+
+- 最新測試站 Worker `starry-recorder-preview` 版本 `f9ef0061-261f-433d-b97a-98333b8524bb`，GitHub 公網驗證成功：https://github.com/yukidu/starry-recorder/actions/runs/39977280618 。
+- 本次回退上一版 Preview 的代碼 `SR-PREVIEW-ROLLBACK-0B243243`；詳細部署記錄見 `docs/DEPLOYMENTS.md`。
+- 私人音檔入庫與播放只完成後端模組和測試，**沒有雲端 FFprobe 服務、沒有實際匯入/轉檔上傳、沒有開放會員私人操作**。
+- 其他繁星 App 沒有被修改；Draft PR #1 未合併。

@@ -2,6 +2,18 @@
 
 > 以下「部署」僅代表獨立的無會員資料測試站，不代表正式錄音 App 上線。
 
+## 2026-10-23｜第四次 Cloudflare Preview 部署（私人音訊規則測試進度）
+
+- 測試網址：https://starry-recorder-preview.yukidu.workers.dev/
+- 來源 GitHub 開發分支 `preview/status-worker.mjs` Commit `02ef0dd210b9a53ad4817b15e5bc3c4185779d57`
+- 內容：**僅**新增私人音檔驗證入庫及授權播放「程式測試通過」的狀態說明；會員登入、真正錄音、雲端上傳、AI 與付款均**沒有啟用**。
+- Cloudflare Deployment ID：`56c6d081-98a5-4925-a246-20b5fa7cf9a5`
+- Cloudflare Version ID：`f9ef0061-261f-433d-b97a-98333b8524bb`，已驗證部署為 100%。
+- GitHub 遠端 HTTPS Smoke test：https://github.com/yukidu/starry-recorder/actions/runs/39977280618 **成功**。
+- 這次回復上一版 Preview 的代碼：**`SR-PREVIEW-ROLLBACK-0B243243`**
+- 回復目標：`starry-recorder-preview` 先前 Worker Version `0b243243-294b-42af-a6ee-2e09fa3f1816`。
+- 只對 Preview 有效。正式 `record.starry.phd` **仍未部署，正式還原碼不存在**。
+
 ## 2026-10-23｜第三次 Cloudflare Preview 部署（課程管理驗收進度）
 
 - 網址：https://starry-recorder-preview.yukidu.workers.dev/
