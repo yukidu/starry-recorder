@@ -16,6 +16,7 @@ jobs:
       - run: npm test
       - run: python3 tests/schema_test.py
       - run: python3 tests/quota_sqlite_test.py
+      - run: python3 tests/retention_schema_test.py
       - run: npm run build
       - run: node -e "const r=require; console.log(r('@ffmpeg-installer/ffmpeg').version, r('@ffprobe-installer/ffprobe').version)"
       - run: node --test integration-tests/media-probe.test.mjs
