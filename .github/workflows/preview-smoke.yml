@@ -19,6 +19,7 @@ jobs:
           grep -qi 'x-robots-tag: noindex, nofollow, noarchive' /tmp/recorder-headers
           grep -q '尚未正式上線' /tmp/recorder-body
           grep -q 'AI 額度防重複計算' /tmp/recorder-body
+          grep -q '跨會員權限測試通過' /tmp/recorder-body
       - name: Verify API cannot accept private writes
         run: |
           code="$(curl --silent --output /dev/null --write-out '%{http_code}' -X POST 'https://starry-recorder-preview.yukidu.workers.dev/api/upload')"

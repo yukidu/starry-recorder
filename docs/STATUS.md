@@ -3,7 +3,7 @@
 ## 最新結論
 - **正式版尚未部署**；GitHub PR #1 為 Draft，未合併到 main。
 - 僅部署獨立無會員資料測試站：https://starry-recorder-preview.yukidu.workers.dev/
-- Preview Workers 版本：`9f479b66-ff38-41ec-99e3-d623183ee9af`；回復碼 `SR-PREVIEW-20261023-9F479B66`。詳見 `docs/DEPLOYMENTS.md`。
+- Preview Workers 最新版本：`0b243243-294b-42af-a6ee-2e09fa3f1816`；本次還原舊版代碼 `SR-PREVIEW-ROLLBACK-7641FCEF`。詳見 `docs/DEPLOYMENTS.md`。
 - 獨立 Cloudflare D1 `starry-recorder-preview-db` 及私人 R2 `starry-recorder-preview-media` 已建立並驗證，不屬於正式環境。
 
 ## 程式進展與 GitHub 驗證
@@ -44,3 +44,12 @@
 - 新增會員自己才可標記重要課程、更新最近使用時間的資料操作及測試。
 - Cloudflare 測試站狀態頁更新，已驗證：https://github.com/yukidu/starry-recorder/actions/runs/39921154025 。
 - 最新 GitHub CI：https://github.com/yukidu/starry-recorder/actions/runs/39921154032 通過；Draft PR #1 尚未合併；正式網站與原生 Android/iOS App 均未上線。
+
+## 2026-10-23｜課程管理後端模組與跨會員隔離測試
+
+- 新增 `src/course-service.ts`，課程建立、列表、修改名稱、重要課程保護、最近查看時間皆綁定可信後端身份。已接入 `src/worker.ts`。
+- 新增兩位**模擬會員**簽章 JWT 的後端整合測試；會員 A 不能修改會員 B 的課程、無效簽章拒絕、功能開關拒絕。
+- 新增 D1 相容 SQLite 的實際資料隔離測試；未變更正式資料庫。
+- GitHub Actions 驗證：https://github.com/yukidu/starry-recorder/actions/runs/39922523322 成功。
+- **仍未啟用真實 Starry ID 登入**，上述 API 所有私人功能在測試部署維持關閉。
+- Cloudflare Preview Worker 更新狀態頁；部署版本 `0b243243-294b-42af-a6ee-2e09fa3f1816`，回復舊版代碼 `SR-PREVIEW-ROLLBACK-7641FCEF`。
