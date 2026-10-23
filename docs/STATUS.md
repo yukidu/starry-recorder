@@ -26,3 +26,12 @@
 - `record.starry.phd` 尚未啟用；不得對使用者宣稱錄音 App 已上線。
 - Preview Worker 只提供公開資訊，禁用登入、上傳、付款及私人 API。
 - 正式釋出必須符合 GitHub main 最新程式、CI 成功、Cloudflare Production Deploy 成功、正式網域驗證成功與功能安全驗收。
+
+## 2026-10-23 下午｜錄音核心與安全測試進度
+- 錄音狀態：支援暫停、續錄、中斷狀態及 100 分鐘／10 筆邊界的**核心邏輯**；尚未實作 Android/iOS 真正背景錄音。
+- 音檔驗證：新增只接受可信 FFprobe 檢查結果的 M4A/AAC LC、16kHz、單聲道、目標 64kbps、100MB、100 分鐘判斷；尚未建立正式轉檔服務，私人上傳開關維持關閉。
+- AI 引用：新增資料來源 ID、時間軸／照片位置及答案來源檢查邏輯；尚未連接真實 AI 模型或搜尋索引。
+- API 安全：未設定正式中央身份前，私人課程 API、上傳及分享一律拒絕。
+- GitHub Actions：https://github.com/yukidu/starry-recorder/actions/runs/39866215074 已成功，包含 31 項核心單元測試、4 項 SQLite 測試、2 項 FFmpeg 實體音檔測試、5 項 Worker API 安全測試、前端 build、Cloudflare Worker TypeScript 型別檢查和 dry-run；另有 4 項測試頁測試通過。公開 Preview 站 HTTPS smoke test 成功：https://github.com/yukidu/starry-recorder/actions/runs/39866215085 。
+- Preview 站：https://starry-recorder-preview.yukidu.workers.dev/ ，僅有唯讀進度頁，不開放會員登入、音檔、AI 或付款。
+- **Production 尚未部署**。未合併 Draft PR #1；請勿將這些核心邏輯或測試頁當成可使用的完整錄音 App。
