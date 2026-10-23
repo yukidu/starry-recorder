@@ -23,6 +23,15 @@ export async function processSyntheticJob(env,job,day){
    .bind(job.id).first();
  if(!record||record.payload_hash!==digest)return {status:'rejected'};
  if(record.status==='succeeded')return {status:'already_succeeded'};
+ // An AI response may have been saved just before the Worker crashed.
+ // Repair the job state without invoking the paid model a second time.
+ const saved=await env.DB.prepare("SELECT id FROM ai_synthetic_results WHERE id=? AND status='succeeded'")
+  .bind(job.id).first();
+ if(saved){
+  await env.DB.prepare("UPDATE ai_lab_jobs SET status='succeeded' WHERE id=? AND payload_hash=?")
+   .bind(job.id,digest).run();
+  return {status:'already_succeeded'};
+ }
  if(record.attempts>=JOB_ATTEMPT_LIMIT)return {status:'retry_exhausted'};
  // Claim one attempt atomically. A failed invocation uses its own reserved budget slot.
  const claim=await env.DB.prepare(`UPDATE ai_lab_jobs
