@@ -22,10 +22,21 @@
 
 ## 尚未完成
 - Starry ID 安全跨 App 登入、會員額度的完整預留／核銷及撤銷機制。
-- 100 分鐘音訊的實際轉檔、音訊切段工作流程、AI Queue／重試／DLQ、逐字稿與 OCR 存回 D1、完整私有語意搜尋索引。
+- 100 分鐘音訊的實際轉檔、音訊切段工作流程、正式會員資料的 AI Queue／重試／DLQ、逐字稿與 OCR 存回 D1、完整私有語意搜尋索引。
 - 圖片中的文字 OCR 品質驗證、多語言多口音、人物辨識與原始音檔時間戳同步。
 - Android/iOS 原生背景錄音、訂閱付款、2000 人以上安全和負載測試、正式網址 `record.starry.phd`。
 
 ## 回復
 - AI 測試 Worker 初次部署，無舊版本可回切；內部 Lab 回復識別碼：`SR-AILAB-UNDO-2A8A5695`，意思是**停用並經確認後刪除這個無公開路由的測試 Worker**，不影響正式 App 或其他 Worker。
 - 既有唯讀測試站繼續獨立運作，須另記錄它的每次部署版本與上一版回復代碼。
+
+## 2026-10-24｜真實私有 AI 佇列驗證
+- 只接受 `synthetic-` 測試識別碼及短測試文字，拒絕真實會員資料與所有公開 HTTP AI 請求。
+- Cloudflare Worker `starry-recorder-ai-lab` 目前具 AI binding 與專屬 Preview D1 binding。workers.dev 子網域和預覽連結均 **disabled**。
+- Worker Queue `starry-recorder-ai-lab-jobs`，最大每批 1 件、同時 1 個消費者、失敗最多重試 2 次，搭配 `starry-recorder-ai-lab-dlq`。兩個佇列均與其他繁星 App 資源隔離。
+- `0004_ai_lab_budget.sql` 和 `0005_ai_synthetic_results.sql` 已於專用 Preview D1 套用並驗證，含 `job_id` 唯一索引以免重複扣額度。
+- 管理者送出測試工作 `synthetic-waterdemo241024` → Queue → D1 預估 US$0.04 預留 → Cloudflare Llama AI → `ai_synthetic_results` 保存「這個合成科學課說水對生物體是必需的。」；重新送出完全相同工作，D1 僅 **1** 筆預留與 **1** 筆結果。
+- 真實 AI 另外確認 Whisper 對合成英文人聲正確回復「Water is important for healthy human bodies.」，Qwen3.8 圖片 OCR 能回復「WATER」。不代表長音檔分段處理、講者辨識與 OCR 多語言品質已驗收。
+- 最近 GitHub CI：https://github.com/yukidu/starry-recorder/actions/runs/39992603916 成功；狀態站外網檢查：https://github.com/yukidu/starry-recorder/actions/runs/39993380778 第二次嘗試成功。
+- 實際佇列程序有程式級每日最多 10 次推論預留及 US$1 預估預留限制；**不是雲端帳號級硬性總花費上限**。不可供任何會員在 Starry ID／訂閱額度串接完成前使用。
+

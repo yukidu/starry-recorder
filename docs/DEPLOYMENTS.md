@@ -1,3 +1,22 @@
+## 2026-10-24｜Cloudflare AI71 第五版 Preview 與私人佇列部署
+
+### 唯讀狀態站（Preview v5）
+- 網址：https://starry-recorder-preview.yukidu.workers.dev/
+- 顯示「AI 語音、摘要、圖片辨識與私人佇列測試成功」；沒有登入、AI 端點、錄音或付款。
+- Cloudflare Deployment：`ba6df23c-de5a-476b-abaa-ba3342a6a51e`。
+- Cloudflare Version：`44edca64-15ae-4e76-bf09-fde2fc8c9b7b`，流量 100%。
+- 最新 GitHub HTTPS 測試：https://github.com/yukidu/starry-recorder/actions/runs/39993380778（第二次嘗試成功）。
+- **還原上一版代碼：`SR-PREVIEW-ROLLBACK-F9EF0061`**，目標舊版 `f9ef0061-261f-433d-b97a-98333b8524bb`。
+
+### 無公開路由的 AI Lab Worker
+- Worker：`starry-recorder-ai-lab`，workers.dev／預覽網址均停用。
+- Cloudflare 最新 Deployment：`1e587af3-3b78-4f77-b8f3-18e7ccd05fdc`。
+- 最新 Version：`64531c94-f5c2-4919-8378-d247dc919802`（AI 與 Preview D1 綁定）。
+- 私人 Queue：`starry-recorder-ai-lab-jobs`，DLQ：`starry-recorder-ai-lab-dlq`。
+- 前版 Version：`2a8a5695-9ac1-4294-81a1-7dcf635a9d77`。
+- **還原舊版代碼：`SR-AILAB-ROLLBACK-2A8A5695`**。執行還原前，先停用其 Queue consumer；舊版不具 queue handler。還原後再確認工單不再進入該 Worker。
+- 正式錄音 App **仍未部署**，不適用以上 Preview 還原代碼。
+
 # 繁星 AI 錄音｜部署登記簿
 
 > 以下「部署」僅代表獨立的無會員資料測試站，不代表正式錄音 App 上線。

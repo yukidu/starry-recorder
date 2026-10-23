@@ -3,7 +3,7 @@
 ## 最新結論
 - **正式版尚未部署**；GitHub PR #1 為 Draft，未合併到 main。
 - 僅部署獨立無會員資料測試站：https://starry-recorder-preview.yukidu.workers.dev/
-- Preview Workers 最新版本：`0b243243-294b-42af-a6ee-2e09fa3f1816`；本次還原舊版代碼 `SR-PREVIEW-ROLLBACK-7641FCEF`。詳見 `docs/DEPLOYMENTS.md`。
+- Preview Workers 最新版本：`44edca64-15ae-4e76-bf09-fde2fc8c9b7b`；最近一次回復舊版代碼 `SR-PREVIEW-ROLLBACK-F9EF0061`。詳見 `docs/DEPLOYMENTS.md`。
 - 獨立 Cloudflare D1 `starry-recorder-preview-db` 及私人 R2 `starry-recorder-preview-media` 已建立並驗證，不屬於正式環境。
 
 ## 程式進展與 GitHub 驗證
@@ -79,3 +79,13 @@
 - 本次回退上一版 Preview 的代碼 `SR-PREVIEW-ROLLBACK-0B243243`；詳細部署記錄見 `docs/DEPLOYMENTS.md`。
 - 私人音檔入庫與播放只完成後端模組和測試，**沒有雲端 FFprobe 服務、沒有實際匯入/轉檔上傳、沒有開放會員私人操作**。
 - 其他繁星 App 沒有被修改；Draft PR #1 未合併。
+
+## 2026-10-24｜AI71 最新 Cloudflare 成果
+
+- 真實 Cloudflare Workers AI 已驗證：Whisper 語音辨識、Llama 摘要、Qwen 3.8 圖片 OCR。
+- AI 模型程式綁定、內部 AI Worker、Queue + DLQ、D1 合成資料費用預留與結果儲存都已部署成功並完成合成端到端測試。
+- Worker `starry-recorder-ai-lab` Version `64531c94-f5c2-4919-8378-d247dc919802`，worker.dev 已停用；上一版還原碼 `SR-AILAB-ROLLBACK-2A8A5695`，還原前先暫停 Queue consumer 以避免舊版缺少 queue handler。
+- 唯讀 Preview `starry-recorder-preview` Version `44edca64-15ae-4e76-bf09-fde2fc8c9b7b`，上一版還原碼 `SR-PREVIEW-ROLLBACK-F9EF0061`。
+- Cloudflare AI Lab D1 無正式會員資料，合成 `synthetic-waterdemo241024` 僅產生一筆結果與一次費用預留；**沒有向正式會員提供 AI 入口**。
+- 真正的 Starry ID 身份、長錄音處理／逐字稿持久化、私人 OCR 搜尋、原生 Android/iOS 錄音與付款仍待實作。
+- 正式網站 `record.starry.phd` 沒有部署、PR #1 為 Draft 未合併。
