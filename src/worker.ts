@@ -2,6 +2,7 @@ import {assertRecording,assertUploadSize,requireString,ValidationError} from './
 import {verifyStarryToken,AuthenticationError} from './auth';
 import {capabilities} from './capabilities';
 import {listOwnedCourses,createOwnedCourse,renameOwnedCourse,protectOwnedCourse,touchOwnedCourse} from './course-service';
+import {authorizedAudioPlayback} from './audio-playback';
 /** Replace with generated Cloudflare Env types after verifying resource bindings. */
 interface Env {
   STAR_ID_ISSUER:string;STAR_ID_AUDIENCE:string;STAR_ID_JWKS_URL:string;
@@ -99,6 +100,20 @@ async function handle(req:Request,env:Env):Promise<Response>{
       await env.DB.prepare('INSERT INTO recordings(id,course_id,slot,title,duration_seconds) VALUES (?,?,?,?,?)').bind(id,rec[1],slot,title,durationSeconds).run();
     }catch{return error(409,'slot_already_used');}
     return json({id,slot,title,durationSeconds,status:'pending'},201);
+  }
+  const playback=/^\\/api\\/recordings\\/([0-9a-f-]{36})\\/play$/.exec(path);
+  if(playback&&(method==='GET'||method==='HEAD')){
+    const found=await authorizedAudioPlayback(env.DB,{
+      head:key=>env.MEDIA.head(key),
+      get:async(key,options)=>{
+        const object=await env.MEDIA.get(key,options);
+        if(!object||!('body' in object))return null;
+        return {size:object.size,body:object.body};
+      }
+    },{userId,recordingId:playback[1],method,rangeHeader:req.headers.get('range')});
+    if(found.type==='forbidden'||found.type==='unavailable')return error(404,'not_found');
+    if(found.type==='range_error')return new Response(null,{status:416,headers:found.headers});
+    return new Response(found.body,{status:found.status,headers:found.headers});
   }
   const upload=/^\/api\/recordings\/([0-9a-f-]{36})\/audio$/.exec(path);
   if(upload&&method==='PUT'){
