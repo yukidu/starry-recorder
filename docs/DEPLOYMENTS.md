@@ -1,3 +1,15 @@
+## 2026-10-24｜AI Lab 第二次部署（可靠重試）
+
+- Worker：`starry-recorder-ai-lab`，不提供 workers.dev 或 Preview 對外網址
+- Cloudflare Deployment ID：`13d70c50-f8cc-4b80-bcfc-33481418605d`
+- Version ID：`5b7e7118-463b-4127-ba12-7caab3eea8d4`，已部署 100%
+- 已驗證 AI 與獨立 Preview D1 綁定，且公開子網域與預覽連結仍關閉
+- GitHub 驗證：https://github.com/yukidu/starry-recorder/actions/runs/39996078924 通過
+- 實際新佇列工作 `synthetic-retryfix20261024a` 產生一次摘要與一次費用預留；相同工作 ID 換不同內容後未覆寫
+- **還原上一版代碼：`SR-AILAB-ROLLBACK-64531C94`**，舊版 Worker `64531c94-f5c2-4919-8378-d247dc919802`
+- 若需要回復，需先暫停專屬 Queue consumer，再執行舊版 Worker 切換與驗證；不得修改其他繁星 App
+- 正式版 `record.starry.phd` 仍未部署
+
 ## 2026-10-24｜Cloudflare AI71 第五版 Preview 與私人佇列部署
 
 ### 唯讀狀態站（Preview v5）

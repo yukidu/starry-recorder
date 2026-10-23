@@ -40,3 +40,14 @@
 - 最近 GitHub CI：https://github.com/yukidu/starry-recorder/actions/runs/39992603916 成功；狀態站外網檢查：https://github.com/yukidu/starry-recorder/actions/runs/39993380778 第二次嘗試成功。
 - 實際佇列程序有程式級每日最多 10 次推論預留及 US$1 預估預留限制；**不是雲端帳號級硬性總花費上限**。不可供任何會員在 Starry ID／訂閱額度串接完成前使用。
 
+
+## 2026-10-24｜繼續開發：重試、逐字稿與授權來源
+
+- `ai-lab/queue-worker.mjs` 已修正：同一 synthetic job 預留相同 payload hash，兩次失敗封頂；每一次實際 AI 執行都另外預留費用，同工作改內容被拒絕；已成功保存的結果即使在狀態標記前中斷，重試也會自動修復狀態，不會重新呼叫模型。
+- 針對新 Worker Version `5b7e7118-463b-4127-ba12-7caab3eea8d4` 送出 `synthetic-retryfix20261024a`，確認 Cloudflare Queue→模型→D1：`attempts=1`、成功一筆、費用預留一次。隨後用同 ID 不同 prompt 重送，資料與費用均維持一次。
+- 新增 `src/transcript-store.ts`，限定已驗證錄音和會員擁有者的逐字稿分段寫入，使用 DB batch 與每工作分段唯一索引避免重試重複；讀取時需擁有者或有效分享權限。
+- 新增 `src/asr-segmentation.ts`：100 分鐘可切成約 90 秒的可解碼區間計畫，含重疊去重及 Whisper 相對時間轉原始時間，**尚無 FFmpeg 轉檔執行器**。
+- 新增 `src/authorized-evidence.ts`：AI 問答資料僅限課程擁有者或有效 `allow_ai` 分享者，過期／已撤銷的授權拒絕；現階段有限量 DB 來源抽取，**不是完整語意搜尋**。
+- GitHub 測試成功：https://github.com/yukidu/starry-recorder/actions/runs/39997585368 。
+- Preview D1 已成功執行 `0006_ai_lab_jobs.sql`；`0007_transcript_chunk_indices.sql` 的雲端套用因工具安全檢查遭拒，**尚未套用 Cloudflare D1**。不以替代手段繞過安全限制；部署正式逐字稿前必須補上此 migration 並確認資料庫欄位與索引存在。
+- Starry ID、R2 真實音檔轉碼、真人長音檔、原生 Android/iOS 錄音、AI 付費與正式上線門檻均未完成。

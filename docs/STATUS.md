@@ -89,3 +89,12 @@
 - Cloudflare AI Lab D1 無正式會員資料，合成 `synthetic-waterdemo241024` 僅產生一筆結果與一次費用預留；**沒有向正式會員提供 AI 入口**。
 - 真正的 Starry ID 身份、長錄音處理／逐字稿持久化、私人 OCR 搜尋、原生 Android/iOS 錄音與付款仍待實作。
 - 正式網站 `record.starry.phd` 沒有部署、PR #1 為 Draft 未合併。
+
+## 2026-10-24｜可靠重試與錄音逐字稿（尚未 Production）
+
+- AI Lab 新版本 `5b7e7118-463b-4127-ba12-7caab3eea8d4` 經 Cloudflare 確認部署成功且不公開，回復舊版代碼 `SR-AILAB-ROLLBACK-64531C94`。
+- 新增可靠重試、Whisper 90 秒音檔切段計畫、私人逐字稿保存與授權 AI 資料來源讀取的核心模組。
+- Cloudflare D1 已套用 `0006_ai_lab_jobs.sql`。因工具安全限制，`0007_transcript_chunk_indices.sql` 尚未套用，不能啟用正式逐字稿保存。
+- GitHub 最新 CI 成功：https://github.com/yukidu/starry-recorder/actions/runs/39997585368 。
+- 公開唯讀測試站仍是先前 v5（`44edca64-15ae-4e76-bf09-fde2fc8c9b7b`），本輪沒有修改或重新部署它。
+- 私人 AI 佇列僅處理合成資料；無正式會員登入、雲端音檔執行器、AI 個人額度訂閱與原生手機錄音。
