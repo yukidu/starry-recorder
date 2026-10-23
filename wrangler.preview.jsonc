@@ -10,6 +10,7 @@
     "binding": "ASSETS",
     "run_worker_first": ["/api/*"]
   },
+  "ai": {"binding":"AI"},
   "observability": {"enabled": true},
   "vars": {
     "STAR_ID_ISSUER": "NOT_CONFIGURED",
