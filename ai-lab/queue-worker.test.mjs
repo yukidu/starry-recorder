@@ -25,6 +25,9 @@ function fixture({budgetLimit=10,failedInvocations=0}={}){
     if(sql.startsWith('SELECT payload_hash,status,attempts FROM ai_lab_jobs')){
      return state.jobs.get(args[0])??null;
     }
+    if(sql.startsWith('SELECT id FROM ai_synthetic_results')){
+     return state.results.has(args[0])?{id:args[0]}:null;
+    }
     if(sql.includes('UPDATE ai_lab_jobs')&&sql.includes('RETURNING attempts')){
      const [id,digest,cap]=args,job=state.jobs.get(id);
      if(!job||job.payload_hash!==digest||job.status==='succeeded'||job.attempts>=cap)return null;
@@ -98,4 +101,16 @@ test('exhausted daily budget blocks AI without evading limits',async()=>{
 test('reject malformed job without D1 access',async()=>{
  const result=await processSyntheticJob({DB:{prepare(){throw Error('db touched')}}},{id:'invalid'},'2026-10-24');
  assert.equal(result.status,'rejected');
+});
+
+test('crash after response storage but before job completion recovers without second AI cost',async()=>{
+ const f=fixture();
+ assert.equal((await processSyntheticJob(f.env,good,'2026-10-24')).status,'succeeded');
+ const record=f.state.jobs.get(good.id);
+ record.status='processing'; // simulate database status write interruption after result persisted
+ const recovered=await processSyntheticJob(f.env,good,'2026-10-24');
+ assert.equal(recovered.status,'already_succeeded');
+ assert.equal(f.state.modelCalls,1);
+ assert.equal(f.state.reservations.size,1);
+ assert.equal(f.state.jobs.get(good.id).status,'succeeded');
 });
