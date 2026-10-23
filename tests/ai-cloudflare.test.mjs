@@ -30,7 +30,7 @@ test('image OCR uses vision model and bounded fake PNG data',async()=>{
  const ai=stub({response:'維生素 D'});
  const r=await recognizeSlide(ai,{bytes:new Uint8Array(64),mime:'image/png'});
  assert.equal(r.text,'維生素 D');assert.equal(ai.calls[0].model,MODELS.vision);
- assert.match(ai.calls[0].input.image,/^data:image\/png;base64,/);
+ assert.match(ai.calls[0].input.messages[1].content[1].image_url.url,/^data:image\/png;base64,/);
 });
 test('citation model may only use supplied authorized source IDs',async()=>{
  const evidence=[{id:'source_1',kind:'transcript',courseId:'course1',recordingId:'recording1',startMs:1000,text:'Lesson mentions vitamin D'}];
