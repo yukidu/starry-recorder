@@ -53,3 +53,13 @@
 - GitHub Actions 驗證：https://github.com/yukidu/starry-recorder/actions/runs/39922523322 成功。
 - **仍未啟用真實 Starry ID 登入**，上述 API 所有私人功能在測試部署維持關閉。
 - Cloudflare Preview Worker 更新狀態頁；部署版本 `0b243243-294b-42af-a6ee-2e09fa3f1816`，回復舊版代碼 `SR-PREVIEW-ROLLBACK-7641FCEF`。
+
+## 2026-10-23 下午｜最新課程管理與上線安全關卡
+
+- 完成 `src/course-service.ts`：課程新增、列表、改名、保護及最近使用時間全部限定已驗證擁有者；新的正向 API 測試利用短效 RS256 簽章模擬兩個不同會員，驗證跨會員不能讀寫、偽造 JWT 拒絕。
+- 實際 SQLite 測試證明已刪課程不可改名、會員 A 無法修改會員 B 的課程。
+- 新增 `tsconfig.web.json`，React/TypeScript 網頁編譯執行更嚴格型別檢查。
+- 新增 `release-manifest.json` 與 `scripts/release-gate.mjs`：在登入、媒體處理、原生錄音、AI、訂閱、法務與負載等關卡完成前，`npm run cf:deploy` 強制失敗，**預設拒絕正式部署**。
+- GitHub Actions 最新完整驗證成功：https://github.com/yukidu/starry-recorder/actions/runs/39923108807 。
+- Cloudflare 第三版**唯讀 Preview** 成功部署；Worker Version `0b243243-294b-42af-a6ee-2e09fa3f1816`，部署記錄與舊版還原代碼見 `docs/DEPLOYMENTS.md`。HTTPS 檢查 https://github.com/yukidu/starry-recorder/actions/runs/39922742035 通過。
+- **沒有正式 Production 網域、正式登入、原生 Android/iOS 背景錄音、真實音檔服務端轉碼、AI 引擎或正式訂閱付款。** Draft PR #1 不合併。
