@@ -101,7 +101,7 @@ async function handle(req:Request,env:Env):Promise<Response>{
     }catch{return error(409,'slot_already_used');}
     return json({id,slot,title,durationSeconds,status:'pending'},201);
   }
-  const playback=/^\\/api\\/recordings\\/([0-9a-f-]{36})\\/play$/.exec(path);
+  const playback=/^\/api\/recordings\/([0-9a-f-]{36})\/play$/.exec(path);
   if(playback&&(method==='GET'||method==='HEAD')){
     const found=await authorizedAudioPlayback(env.DB,{
       head:key=>env.MEDIA.head(key),
