@@ -1,6 +1,7 @@
 import {assertRecording,assertUploadSize,requireString,ValidationError} from './core';
 import {verifyStarryToken,AuthenticationError} from './auth';
 import {capabilities} from './capabilities';
+import {listOwnedCourses,createOwnedCourse,renameOwnedCourse,protectOwnedCourse,touchOwnedCourse} from './course-service';
 /** Replace with generated Cloudflare Env types after verifying resource bindings. */
 interface Env {
   STAR_ID_ISSUER:string;STAR_ID_AUDIENCE:string;STAR_ID_JWKS_URL:string;
@@ -53,13 +54,30 @@ async function handle(req:Request,env:Env):Promise<Response>{
     return json({member:row});
   }
   if(method==='GET'&&path==='/api/courses'){
-    const result=await env.DB.prepare('SELECT id,title,created_at FROM courses WHERE owner_user_id=? AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 100').bind(userId).all();
-    return json({courses:result.results});
+    return json({courses:await listOwnedCourses(env.DB,userId)});
   }
   if(method==='POST'&&path==='/api/courses'){
-    const data=await bodyObject(req);const title=requireString(data.title,'title',120),id=crypto.randomUUID();
-    await env.DB.prepare('INSERT INTO courses(id,owner_user_id,title) VALUES (?,?,?)').bind(id,userId,title).run();
-    return json({id,title},201);
+    const data=await bodyObject(req);
+    return json({course:await createOwnedCourse(env.DB,userId,data.title)},201);
+  }
+  // Owner writes are always checked again by the SQL statement itself.
+  // Shared readers never acquire edit/protection rights.
+  const rename=/^\/api\/courses\/([0-9a-f-]{36})$/.exec(path);
+  if(rename&&method==='PATCH'){
+    const data=await bodyObject(req);
+    const changed=await renameOwnedCourse(env.DB,userId,rename[1],data.title);
+    return changed?json({course:changed}):error(404,'not_found');
+  }
+  const protect=/^\/api\/courses\/([0-9a-f-]{36})\/protection$/.exec(path);
+  if(protect&&method==='PUT'){
+    const data=await bodyObject(req);
+    const changed=await protectOwnedCourse(env.DB,userId,protect[1],data.pinned);
+    return changed?json({course:changed}):error(404,'not_found');
+  }
+  const view=/^\/api\/courses\/([0-9a-f-]{36})\/view$/.exec(path);
+  if(view&&method==='POST'){
+    return await touchOwnedCourse(env.DB,userId,view[1])
+      ?new Response(null,{status:204,headers}):error(404,'not_found');
   }
   const course=/^\/api\/courses\/([0-9a-f-]{36})$/.exec(path);
   if(course&&method==='GET'){
