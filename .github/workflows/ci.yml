@@ -19,6 +19,7 @@ jobs:
       - run: python3 tests/retention_schema_test.py
       - run: python3 tests/course_ops_sqlite_test.py
       - run: python3 tests/ai_budget_sqlite_test.py
+      - run: python3 tests/ai_job_sqlite_test.py
       - run: npx tsc --project tsconfig.web.json
       - run: npm run build
       - run: node -e "const r=require; console.log(r('@ffmpeg-installer/ffmpeg').version, r('@ffprobe-installer/ffprobe').version)"
