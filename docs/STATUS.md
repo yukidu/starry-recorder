@@ -63,3 +63,12 @@
 - GitHub Actions 最新完整驗證成功：https://github.com/yukidu/starry-recorder/actions/runs/39923108807 。
 - Cloudflare 第三版**唯讀 Preview** 成功部署；Worker Version `0b243243-294b-42af-a6ee-2e09fa3f1816`，部署記錄與舊版還原代碼見 `docs/DEPLOYMENTS.md`。HTTPS 檢查 https://github.com/yukidu/starry-recorder/actions/runs/39922742035 通過。
 - **沒有正式 Production 網域、正式登入、原生 Android/iOS 背景錄音、真實音檔服務端轉碼、AI 引擎或正式訂閱付款。** Draft PR #1 不合併。
+
+## 2026-10-23 晚間｜私人音檔安全入庫與播放架構
+
+- 新增 `src/audio-promotion.ts`：僅供私有背景任務呼叫。可信 FFprobe 驗證 AAC-LC、M4A、16kHz 單聲道、約 64kbps、最長 100 分鐘與 100MB，且必須跟 R2 物件大小、DB 預留大小與登記時長核對，才可將音檔自私人 quarantine 複製至 verified 區；R2 出錯或 DB 狀態衝突不得開放音檔。**尚未部署實際 FFprobe 背景服務，僅完成可測試的安全模組。**
+- 新增 `src/audio-playback.ts`：驗證當前使用者是錄音擁有者或持有效課程分享授權，才允許以私人 R2 串流音檔；支援 HTTP 206 單段 Range 與 HEAD，拒絕無效請求、過期／撤銷授權與暫存音檔。後端 `src/worker.ts` 已接入，**正式功能預設關閉、尚未對會員開放**。
+- 分享「禁止下載」實際僅能不提供官方下載操作，**無法保證防止已授權播放者擷取網路音訊**；不可以宣稱等同 DRM。
+- Starry ID 新版中央 Portal 已開始提供 Google 網頁登入與中央會話管理，但尚無錄音 App 專屬的短效跨 App Token／撤銷驗證契約，因此錄音 App 對外私人功能仍保持 fail-closed；參照中央會員整合 issue #23。
+- GitHub CI https://github.com/yukidu/starry-recorder/actions/runs/39976606431 **成功**：66 項核心測試，其餘資料庫、影音檔案、Worker API、Web build、Worker typecheck 和 Wrangler dry-run 均通過。
+- **Cloudflare Production 尚未部署**，測試站僅顯示唯讀狀態，Cloudflare Worker 上沒有真正音訊處理服務。
